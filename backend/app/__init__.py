@@ -1,0 +1,3 @@
+"""AstroGuard — Autonomous Spaceflight Threat Recognition and Analysis backend package."""
+
+__version__ = "0.2.0"
