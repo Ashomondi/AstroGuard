@@ -1,0 +1,131 @@
+# AstroGuard Dataset Registry (F-41 & docs/validation-plan.md)
+# Honest data provenance policy:
+# - Public Earth datasets calibrate signal priors, noise models, and artifact realism.
+# - NASA OSDR (Inspiration4/SOMA) is small, short-duration, predominantly biological, and unlabeled -> realism_only.
+# - NASA LSDA HERA analog data is access-controlled by request -> external_validation_if_granted.
+# - NEVER claim AstroGuard is "trained on NASA astronaut data".
+# - data/raw/ and data/harmonized/ are git-ignored; only small synthetic/derived fixtures live in data/fixtures/.
+
+registry_version: "1.0"
+policy_notice: "Public datasets supply signal priors and realism checks only; never claim trained on NASA astronaut data."
+
+datasets:
+  - id: wesad
+    name: WESAD
+    full_name: Wearable Stress and Affect Detection Dataset
+    role: signal_priors
+    access: public_open
+    license: Verify upstream research license (UCI / ETH / Karlsruhe terms; non-commercial research review required)
+    source_url: https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/
+    raw_dir: data/raw/wesad
+    harmonized_dir: data/harmonized/wesad
+    fixture_path: data/fixtures/sample_wearable.json
+    adapter_status: fixture_available
+    signals_mapped:
+      - heart_rate
+      - hrv_rmssd
+      - activity_index
+      - stress_score
+    limitations:
+      - Short laboratory stress-induction protocol on Earth volunteers (n=15); not longitudinal flight physiology.
+      - Wrist Empatica E4 motion artifacts require quality-gate routing rather than direct clinical inference.
+
+  - id: sleep_edf
+    name: Sleep-EDF
+    full_name: PhysioNet Sleep-EDF Database Expanded
+    role: signal_priors
+    access: public_open
+    license: Open Data Commons Attribution License v1.0 (PhysioNet — verify exact term compliance before redistribution)
+    source_url: https://physionet.org/content/sleep-edfx/
+    raw_dir: data/raw/sleep_edf
+    harmonized_dir: data/harmonized/sleep_edf
+    fixture_path: data/fixtures/sample_wearable.json
+    adapter_status: fixture_available
+    signals_mapped:
+      - sleep_duration
+      - sleep_fragmentation
+    limitations:
+      - Polysomnography EEG/EOG hypnograms on terrestrial subjects; fragmentation index requires mapping from sleep-stage transitions.
+      - No spaceflight circadian disruption or microgravity confounders present.
+
+  - id: ppg_dalia
+    name: PPG-DaLiA
+    full_name: PPG Dataset for Motion Compensation and Heart Rate Estimation in Daily Life Activities
+    role: signal_priors
+    access: public_open
+    license: Verify upstream UCI / CC BY 4.0 license terms before redistribution
+    source_url: https://archive.ics.uci.edu/dataset/495/ppg+dalia
+    raw_dir: data/raw/ppg_dalia
+    harmonized_dir: data/harmonized/ppg_dalia
+    fixture_path: data/fixtures/sample_wearable.json
+    adapter_status: fixture_available
+    signals_mapped:
+      - heart_rate
+      - hr_recovery_1m
+      - activity_index
+    limitations:
+      - Short single-session daily activity recordings (n=15); valuable for motion-spike artifact priors and exercise context transitions only.
+
+  - id: lifesnaps
+    name: LifeSnaps
+    full_name: LifeSnaps Multi-modal Fitbit and Ecological Momentary Assessment Dataset
+    role: signal_priors
+    access: public_open
+    license: Zenodo CC BY 4.0 (verify participant-privacy terms; raw personal IDs never committed)
+    source_url: https://zenodo.org/records/7229547
+    raw_dir: data/raw/lifesnaps
+    harmonized_dir: data/harmonized/lifesnaps
+    fixture_path: data/fixtures/sample_wearable.json
+    adapter_status: adapter_planned
+    signals_mapped:
+      - resting_hr
+      - hrv_rmssd
+      - sleep_duration
+      - activity_index
+      - mood_score
+      - stress_score
+    limitations:
+      - Terrestrial consumer wearable cohort with substantial missingness and routine adherence noise; useful for missingness and self-report/passive prior calibration only.
+
+  - id: nasa_osdr_inspiration4_soma
+    name: NASA OSDR Inspiration4/SOMA
+    full_name: NASA Open Science Data Repository — Inspiration4 Space Omics and Medical Atlas
+    role: realism_only
+    access: public_open
+    license: NASA Open Science Data Repository terms (verify dataset-specific attribution and IRB/reuse terms)
+    source_url: https://osdr.nasa.gov/bio/
+    raw_dir: data/raw/nasa_osdr_soma
+    harmonized_dir: data/harmonized/nasa_osdr_soma
+    fixture_path: null
+    adapter_status: realism_reference_only
+    signals_mapped:
+      - heart_rate
+      - spo2
+      - radiation_usv_day
+      - radiation_cumulative_msv
+    limitations:
+      - Very small crew (n=4), short ~3-day orbital mission, predominantly biological/omics assays, and unlabeled for continuous operational readiness anomalies.
+      - Used strictly as a flight-realism sanity check; NEVER claim AstroGuard is trained on NASA astronaut data.
+
+  - id: nasa_lsda_hera
+    name: NASA LSDA HERA
+    full_name: NASA Life Sciences Data Archive — Human Exploration Research Analog
+    role: external_validation_if_granted
+    access: controlled_request
+    license: NASA LSDA Data Use Agreement required prior to any download or processing
+    source_url: https://lsda.jsc.nasa.gov/
+    raw_dir: data/raw/nasa_lsda_hera
+    harmonized_dir: data/harmonized/nasa_lsda_hera
+    fixture_path: null
+    adapter_status: access_gated
+    signals_mapped:
+      - sleep_duration
+      - sleep_fragmentation
+      - pvt_mean_rt
+      - pvt_lapses
+      - mood_score
+      - stress_score
+      - co2_ppm
+    limitations:
+      - Access-gated isolated/confined ground-analog telemetry; no data is bundled in this repository and no automated download is attempted.
+      - Reserved strictly for external validation if formal LSDA access is granted.
